@@ -78,6 +78,25 @@ function FilmsMaterialTable(props) {
             columns={state.columns}
             data={state.data}
             icons={tableIcons}
+            options={{
+                search: true
+            }}
+            onChangePage={pageData =>
+                new Promise(resolve => {
+                    setTimeout(async () => {
+                        resolve();
+                        console.log(pageData);
+                        // const data = [...state.data];
+                        // const removed = data.splice(data.indexOf(oldData), 1);
+                        // if (removed.length)
+                        //     try {
+                        //         const res = await axios.delete('http://localhost:3030/api/', { data: removed[0] });
+
+                        //     } catch (err) { alert(`This film was deleted`); }
+                        // // debugger;
+                        // setState({ ...state, data });
+                    }, 600);
+                })}
             editable={{
                 onRowAdd: newData =>
                     new Promise(resolve => {
@@ -97,7 +116,7 @@ function FilmsMaterialTable(props) {
                             newData.actorList = actorObjectList;
                             console.log(newData);
                             try {
-                                const res = await axios.post('http://localhost:3030/api/', { data:newData });
+                                const res = await axios.post('http://localhost:3030/api/', { data: newData });
                                 debugger;
                             } catch (err) { alert(err.message); }
                             data.push(newData);
@@ -119,7 +138,8 @@ function FilmsMaterialTable(props) {
                             // debugger;
                             setState({ ...state, data });
                         }, 600);
-                    }),
+                    })
+
             }}
         />
     );

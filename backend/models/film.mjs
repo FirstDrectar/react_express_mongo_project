@@ -19,6 +19,9 @@ const Statics = {
     },
     getAll() {
         return Film.find();
+    },
+    getPart(page,part){
+
     }
 }
 const Methods = {
