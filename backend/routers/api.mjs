@@ -25,12 +25,12 @@ router.route("/")
   })
   .post(async (req, res) => {
     try {
-      // console.log(req.body);
+       console.log(req.body);
       const film = {
-        name: req.body.name,
-        releaseDate: req.body.releaseDate,
-        format: req.body.format,
-        actorList: req.body.actorList
+        name: req.body.data.name,
+        releaseDate: req.body.data.releaseDate,
+        format: req.body.data.format,
+        actorList: req.body.data.actorList
       }
       const data = await Film.addNewFilm(film)
       return res.json({
@@ -46,8 +46,8 @@ router.route("/")
     }
   }).delete(async (req, res) => {
     try {
-      if (req.body.id) {
-        const id = req.body.id;
+      if (req.body._id) {
+        const id = req.body._id;
         const data = await Film.deleteById(id);
         return res.json({
           success: true,
@@ -69,19 +69,7 @@ router.route("/")
 
 
 
-// this is our update method
-// this method overwrites existing data in our database
 
-
-// this is our delete method
-// this method removes existing data in our database
-router.delete('/deleteData', (req, res) => {
-  const { id } = req.body;
-  Data.findByIdAndRemove(id, (err) => {
-    if (err) return res.send(err);
-    return res.json({ success: true });
-  });
-});
 
 // this is our create methid
 // this method adds new data in our database
