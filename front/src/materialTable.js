@@ -1,3 +1,4 @@
+// @ts-check
 import React from "react";
 import MaterialTable from 'material-table';
 import { forwardRef } from 'react';
@@ -21,10 +22,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import FilledInput from '@material-ui/core/FilledInput';
-import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
 export default class FilmsMaterialTable extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = { searchValue: 'name', sortValue: 'asc' };
 
         this.columns = [
@@ -69,6 +70,8 @@ export default class FilmsMaterialTable extends React.Component {
         this.fetchPage = this.fetchPage.bind(this);
         this.searchValueHandleChange = this.searchValueHandleChange.bind(this);
         this.sortHandleChange = this.sortHandleChange.bind(this);
+        this.fileInput = React.createRef();
+        this.fileInputHandleSubmit = this.fileInputHandleSubmit.bind(this);
     }
     searchValueHandleChange(event) {
         this.setState({ searchValue: event.target.value });
@@ -82,9 +85,9 @@ export default class FilmsMaterialTable extends React.Component {
         if (actorList.length % 2) {
             return alert("name + surname = 2 words");
         }
-        const date =parseInt(newData.releaseDate); 
-      
-        if(isNaN(date) || date>2020 || date<1000){
+        const date = parseInt(newData.releaseDate);
+
+        if (isNaN(date) || date > 2020 || date < 1000) {
             return alert("Wrong release date");
         }
         for (let i = 0; i < actorList.length; i++) {
@@ -119,6 +122,15 @@ export default class FilmsMaterialTable extends React.Component {
             totalCount: totalDocs
         };
     }
+    fileInputHandleSubmit(event) {
+        event.preventDefault();
+        const formData= new FormData();
+        formData.append("file",this.fileInput.current.files[0]);
+        return axios
+            .post('http://localhost:3030/api/file', formData, )
+            .catch(err => alert(err.message));
+
+    }
     render() {
         return (
             <>
@@ -140,8 +152,10 @@ export default class FilmsMaterialTable extends React.Component {
                     <MenuItem value="asc">asc</MenuItem>
                     <MenuItem value="desc">desc</MenuItem>
                 </Select>
-
-
+                <form onSubmit={this.fileInputHandleSubmit}>
+                    <Input type="file" inputProps={{ accept: ".txt" }} inputRef={this.fileInput} />
+                    <button type="submit">Submit</button>
+                </form>
 
                 <MaterialTable
                     title="Films list"

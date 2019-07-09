@@ -6,6 +6,7 @@ import  cors from "cors";
 import bodyParser from "body-parser";
 import logger from "morgan";
 import {router} from "./routers/api.mjs";
+
 const PORT = config.port;
 console.log(config);
 const app = express();
