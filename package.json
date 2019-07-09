@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@material-ui/core": "^4.2.0",
-    "concurrently": "^4.1.1"
+    "concurrently": "^4.1.1",
+    "escape-string-regexp": "^2.0.0"
   },
   "devDependencies": {},
   "scripts": {

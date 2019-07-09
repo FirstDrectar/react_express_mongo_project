@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from 'axios';
 import FilmsMaterialTable from "./materialTable";
 import { keyframes } from "styled-components";
+import Input from '@material-ui/core/Input';
 
 // function Loader() {
 //     var spin = keyframes`
@@ -50,7 +51,7 @@ class FilmsTable extends Component {
     async componentDidMount() {
         try {
             const res = await axios.get('http://localhost:3030/api/', config);
-            console.log(res.data.data);
+            // console.log(res.data.data);
             const films = res.data.data;
 
             this.setState({ dataIsFatched: true, films });
@@ -58,20 +59,20 @@ class FilmsTable extends Component {
         } catch (err) {
             console.log(err.message);
         };
-        console.log(this.state.films);
+        // console.log(this.state.films);
 
     }
     render() {
         return (
             <div>
                 <div style={{ maxWidth: "100%" }}>
-                    {
-                        this.state.dataIsFatched ?
-                            <FilmsMaterialTable films={this.state.films} ></FilmsMaterialTable>
-                            :
-                            <p></p>
-                    }
+
+
+                    <FilmsMaterialTable  ></FilmsMaterialTable>
+
+
                 </div>
+                
             </div>
         );
     }

@@ -45,6 +45,7 @@ router.route("/")
       });
     }
   }).delete(async (req, res) => {
+    console.dir(req.body);
     try {
       if (req.body._id) {
         const id = req.body._id;
@@ -69,33 +70,14 @@ router.route("/")
 
 
 router.get('/pagination', async (req, res) => {
-  console.log(req.query.page + req.query.limit + req.query.search);
+  console.log(req.query);
+
   try {
-    const result = await Film.getPart(req.query.page, req.query.limit, req.query.search);
-    console.log(result);
+    const { totalDocs, docs } = await Film.getPart(+req.query.page + 1, +req.query.limit, req.query.searchstr, req.query.search, req.query.sort);
+    res.json({ totalDocs, docs });
   } catch (err) {
     console.log(err.message);
+    res.sendStatus(500);
   }
 });
 
-
-// this is our create methid
-// this method adds new data in our database
-router.post('/putData', (req, res) => {
-  let data = new Data();
-
-  const { id, message } = req.body;
-
-  if ((!id && id !== 0) || !message) {
-    return res.json({
-      success: false,
-      error: 'INVALID INPUTS',
-    });
-  }
-  data.message = message;
-  data.id = id;
-  data.save((err) => {
-    if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true });
-  });
-});
