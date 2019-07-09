@@ -25,7 +25,7 @@ router.route("/")
   })
   .post(async (req, res) => {
     try {
-       console.log(req.body);
+      console.log(req.body);
       const film = {
         name: req.body.data.name,
         releaseDate: req.body.data.releaseDate,
@@ -68,7 +68,15 @@ router.route("/")
   })
 
 
-
+router.get('/pagination', async (req, res) => {
+  console.log(req.query.page + req.query.limit + req.query.search);
+  try {
+    const result = await Film.getPart(req.query.page, req.query.limit, req.query.search);
+    console.log(result);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
 
 
 // this is our create methid

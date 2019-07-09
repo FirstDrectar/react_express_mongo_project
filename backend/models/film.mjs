@@ -1,6 +1,8 @@
-import mongoose from "mongoose";
+import Mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 const encodingFormatArray = ["VHS", "DVD", "Blu-Ray"];
-const filmSchema = new mongoose.Schema(
+
+const FilmSchema = new Mongoose.Schema(
     {
         name: String,
         releaseDate: String,
@@ -8,25 +10,35 @@ const filmSchema = new mongoose.Schema(
         actorList: [{ name: String, surname: String }]
     }
 );
+Mongoose.plugin(mongoosePaginate);
 const Statics = {
     addNewFilm(film) {
         if (-1 < encodingFormatArray.findIndex((val) => val === film.format))
             return Film.create(film);
         throw new Error(`${film.format} isn\`t encoding Format`);
     },
-    deleteById(_id){
-       return Film.findByIdAndDelete({_id});
+    deleteById(_id) {
+        return Film.findByIdAndDelete({ _id });
     },
     getAll() {
         return Film.find();
     },
-    getPart(page,part){
+    async getPart(page, limit, search = null) {
+        try {
+            if (!search) {
+                const result = await Film.paginate({}, { page, limit });
+                // console.log(result);
+            }
 
+        }
+        catch (err) {
+            console.log(err.message);
+        }
     }
 }
 const Methods = {
 
 }
-filmSchema.statics = Statics;
-filmSchema.methods = Methods;
-export const Film = mongoose.model("Film", filmSchema);
+FilmSchema.statics = Statics;
+FilmSchema.methods = Methods;
+export const Film = Mongoose.model("Film", FilmSchema);
