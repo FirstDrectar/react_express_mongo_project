@@ -1,14 +1,14 @@
 import Mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 import escapeStringRegexp from 'escape-string-regexp';
-const encodingFormatArray = ["VHS", "DVD", "Blu-Ray"];
+const encodingFormatArray = ['VHS', 'DVD', 'Blu-Ray'];
 
 const FilmSchema = new Mongoose.Schema(
     {
         name: String,
         releaseDate: String,
         format: String,
-        actorList: [{ name: String, surname: String}]
+        actorList: [{ name: String, surname: String }]
     }
 );
 
@@ -24,6 +24,15 @@ const Statics = {
     getAll() {
         return Film.find();
     },
+    uploadMany(filmArray) {
+        for (let f of filmArray) {
+            const date = parseInt(f.releaseDate);
+            if ((0 > encodingFormatArray.findIndex((val) => val === f.format)) || (isNaN(date) || date > 2020 || date < 1000))
+                throw new Error(`${f.format} isn\`t encoding Format`);
+        }
+        return Film.insertMany(filmArray);
+    }
+    ,
     async getPart(page, limit, searchstr, search, sort) {
         console.log(searchstr);
         if (searchstr) {
@@ -44,8 +53,8 @@ const Statics = {
             }
         } else {
             if (sort === "asc") {
-               
-                 return Film.paginate({}, { page, limit, sort: { name: 'asc' } });
+
+                return Film.paginate({}, { page, limit, sort: { name: 'asc' } });
 
             } else if (sort = "desc") {
                 return Film.paginate({}, { page, limit, sort: { name: 'desc' } });

@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/api', router);
 app.use((err, _req, res, _next) => {
-    res.status(404).send({_err});
+    res.status(404).send({err});
     
 });
 app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
