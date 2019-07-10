@@ -26,7 +26,9 @@ import Input from '@material-ui/core/Input';
 export default class FilmsMaterialTable extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { searchValue: 'name', sortValue: 'asc' };
+        this.fetchPage = this.fetchPage.bind(this);
+
+        this.state = { searchValue: 'name', sortValue: 'asc', data: null };
 
         this.columns = [
             { title: 'Name', field: 'name' },
@@ -67,11 +69,11 @@ export default class FilmsMaterialTable extends React.Component {
             onRowAdd: this.onRowAdd.bind(this),
             onRowDelete: this.onRowDelete.bind(this)
         };
-        this.fetchPage = this.fetchPage.bind(this);
         this.searchValueHandleChange = this.searchValueHandleChange.bind(this);
         this.sortHandleChange = this.sortHandleChange.bind(this);
         this.fileInput = React.createRef();
         this.fileInputHandleSubmit = this.fileInputHandleSubmit.bind(this);
+        this.render = this.render.bind(this);
     }
     searchValueHandleChange(event) {
         this.setState({ searchValue: event.target.value });
@@ -79,7 +81,11 @@ export default class FilmsMaterialTable extends React.Component {
     sortHandleChange(event) {
         this.setState({ sortValue: event.target.value });
     }
-    async onRowAdd(newData) {
+    async onRowAdd(newData, fromFile) {
+        if (fromFile) {
+
+            return;
+        }
         const actorList = newData.actorList.trim().split(/\s+/);
         let actorObjectList = [];
         if (actorList.length % 2) {
@@ -124,10 +130,14 @@ export default class FilmsMaterialTable extends React.Component {
     }
     fileInputHandleSubmit(event) {
         event.preventDefault();
-        const formData= new FormData();
-        formData.append("file",this.fileInput.current.files[0]);
+        const formData = new FormData();
+        formData.append("file", this.fileInput.current.files[0]);
         return axios
-            .post('http://localhost:3030/api/file', formData, )
+            .post('http://localhost:3030/api/file', formData)
+            .then(data => {
+                console.log(data);
+               this.setState({});
+            })
             .catch(err => alert(err.message));
 
     }

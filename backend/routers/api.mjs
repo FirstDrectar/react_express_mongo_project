@@ -87,8 +87,8 @@ router.post("/file", upload.single("file"), async (req, res) => {
 
     }
     console.log(parsedData);
-   await Film.uploadMany(parsedData);
-    return res.sendStatus(HttpStatus.OK);
+
+    return res.json(await Film.uploadMany(parsedData));
   }
   catch (err) {
     console.log(err.message);
@@ -107,7 +107,7 @@ router.get('/pagination', async (req, res) => {
 });
 function parseStr(str) {
   const index = str.indexOf(":");
-  return str.slice(index+1);
+  return str.slice(index + 1);
 }
 function parseActorList(str) {
   const actorObjectList = [];
