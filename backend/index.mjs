@@ -27,3 +27,4 @@ app.use((err, _req, res, _next) => {
     
 });
 app.listen(PORT, () => console.log(`LISTENING ON PORT ${PORT}`));
+export default app;

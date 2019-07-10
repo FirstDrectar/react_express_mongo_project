@@ -36,7 +36,7 @@ router.route("/")
         format: req.body.data.format,
         actorList: req.body.data.actorList
       }
-
+      console.log(film);
       const data = await Film.addNewFilm(film)
       return res.json({
         data

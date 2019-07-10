@@ -26,7 +26,6 @@ import Input from '@material-ui/core/Input';
 export default class FilmsMaterialTable extends React.Component {
     constructor(props) {
         super(props);
-        this.fetchPage = this.fetchPage.bind(this);
 
         this.state = { searchValue: 'name', sortValue: 'asc', data: null };
 
@@ -73,7 +72,8 @@ export default class FilmsMaterialTable extends React.Component {
         this.sortHandleChange = this.sortHandleChange.bind(this);
         this.fileInput = React.createRef();
         this.fileInputHandleSubmit = this.fileInputHandleSubmit.bind(this);
-        this.render = this.render.bind(this);
+        this.fetchPage = this.fetchPage.bind(this);
+
     }
     searchValueHandleChange(event) {
         this.setState({ searchValue: event.target.value });
@@ -136,7 +136,7 @@ export default class FilmsMaterialTable extends React.Component {
             .post('http://localhost:3030/api/file', formData)
             .then(data => {
                 console.log(data);
-               this.setState({});
+
             })
             .catch(err => alert(err.message));
 
@@ -168,6 +168,7 @@ export default class FilmsMaterialTable extends React.Component {
                 </form>
 
                 <MaterialTable
+                    
                     title="Films list"
                     columns={this.columns}
                     data={this.fetchPage}
