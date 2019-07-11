@@ -24,7 +24,7 @@ router.route("/")
   })
   .post(async (req, res) => {
     try {
-      console.log(req.body);
+      // console.log(req.body);
       const date = parseInt(req.body.data.releaseDate);
 
       if (isNaN(date) || date > 2020 || date < 1000) {
@@ -36,8 +36,8 @@ router.route("/")
         format: req.body.data.format,
         actorList: req.body.data.actorList
       }
-      console.log(film);
       const data = await Film.addNewFilm(film)
+
       return res.json({
         data
       });
@@ -48,11 +48,14 @@ router.route("/")
       });
     }
   }).delete(async (req, res) => {
-    console.dir(req.body);
     try {
       if (req.body._id) {
         const id = req.body._id;
         const data = await Film.deleteById(id);
+        console.log(">>>>>>>>>>>>");
+
+        // console.log(data);
+
         return res.json({
           data
         });
@@ -70,8 +73,10 @@ router.route("/")
 
 router.post("/file", upload.single("file"), async (req, res) => {
   try {
-    if (!req.file)
-      res.sendStatus(HttpStatus.BAD_REQUEST);
+    console.log(req);
+    if (!req.file) {
+      return res.sendStatus(HttpStatus.BAD_REQUEST);
+    }
     const data = req.file.buffer.toString();
     const dataArr = data.split("\n").filter(word => word);
     let parsedData = [];
@@ -86,7 +91,7 @@ router.post("/file", upload.single("file"), async (req, res) => {
       parsedData.push(newFilm);
 
     }
-    console.log(parsedData);
+    // console.log(parsedData);
 
     return res.json(await Film.uploadMany(parsedData));
   }
@@ -95,7 +100,6 @@ router.post("/file", upload.single("file"), async (req, res) => {
   }
 });
 router.get('/pagination', async (req, res) => {
-  console.log(req.query);
 
   try {
     const { totalDocs, docs } = await Film.getPart(+req.query.page + 1, +req.query.limit, req.query.searchstr, req.query.search, req.query.sort);

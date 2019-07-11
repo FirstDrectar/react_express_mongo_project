@@ -1,26 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import FilmsMaterialTable from "./materialTable";
-import { keyframes } from "styled-components";
-import Input from '@material-ui/core/Input';
 
-// function Loader() {
-//     var spin = keyframes`
-//     0% { transform: rotate(0deg); }
-//     100% { transform: rotate(360deg); }
-// `;
-
-//     var styles = {
-//         border: "16px solid #eee",
-//         borderTop: "16px solid #3ae",
-//         borderRadius: "50%",
-//         width: "1cm",
-//         height: "1cm",
-//         animation: `${spin} 2s linear infinite`
-//     };
-
-//     return <div style={styles} id="loader" /> ;
-// }
 
 const config = {
 
@@ -42,6 +23,10 @@ const config = {
 //     animation: "spin 2s linear infinite"
 // }
 class FilmsTable extends Component {
+    constructor() {
+        super();
+        
+    }
     state = {
         films: [],
         index: 0,
@@ -62,9 +47,11 @@ class FilmsTable extends Component {
         // console.log(this.state.films);
 
     }
+   
     render() {
         return (
             <div>
+               
                 <div style={{ maxWidth: "100%" }}>
 
 
@@ -72,7 +59,7 @@ class FilmsTable extends Component {
 
 
                 </div>
-                
+
             </div>
         );
     }

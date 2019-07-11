@@ -21,30 +21,16 @@ import axios from 'axios';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import FilledInput from '@material-ui/core/FilledInput';
 import Input from '@material-ui/core/Input';
+import { Button } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
 export default class FilmsMaterialTable extends React.Component {
+
     constructor(props) {
         super(props);
-
-        this.state = { searchValue: 'name', sortValue: 'asc', data: null };
-
-        this.columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Release date', field: 'releaseDate' },
-            { title: 'Format', field: 'format', lookup: { 'VHS': 'VHS', 'DVD': 'DVD', "Blu-Ray": "Blu-Ray" } },
-            {
-                title: 'Actor List',
-                field: 'actorList',
-                render: ({ actorList }) => (
-                    <>{actorList &&
-                        <ul>{
-                            actorList.map(actor => <li key={actor._id}>{actor.name} {actor.surname}</li>)
-                        }</ul>
-                    }</>
-                )
-            }
-        ];
+        this.state = {
+            searchValue: 'name', sortValue: 'asc', data: null
+        };
         this.tableIcons = {
             Add: AddBox,
             Check: Check,
@@ -63,7 +49,23 @@ export default class FilmsMaterialTable extends React.Component {
             SortArrow: ArrowUpward,
             ThirdStateCheck: Remove,
             ViewColumn: ViewColumn
-        };
+        }
+        this.columns = [
+            { title: 'Name', field: 'name' },
+            { title: 'Release date', field: 'releaseDate' },
+            { title: 'Format', field: 'format', lookup: { 'VHS': 'VHS', 'DVD': 'DVD', "Blu-Ray": "Blu-Ray" } },
+            {
+                title: 'Actor List',
+                field: 'actorList',
+                render: ({ actorList }) => (
+                    <>{actorList &&
+                        <ul>{
+                            actorList.map(actor => <li key={actor._id}>{actor.name} {actor.surname}</li>)
+                        }</ul>
+                    }</>
+                )
+            }
+        ];
         this.editable = {
             onRowAdd: this.onRowAdd.bind(this),
             onRowDelete: this.onRowDelete.bind(this)
@@ -73,8 +75,18 @@ export default class FilmsMaterialTable extends React.Component {
         this.fileInput = React.createRef();
         this.fileInputHandleSubmit = this.fileInputHandleSubmit.bind(this);
         this.fetchPage = this.fetchPage.bind(this);
+        this.tableRef = React.createRef();
 
+        this.classes = makeStyles(theme => ({
+            button: {
+                margin: theme.spacing(1),
+            },
+            input: {
+                display: 'none',
+            },
+        }));
     }
+
     searchValueHandleChange(event) {
         this.setState({ searchValue: event.target.value });
     }
@@ -133,10 +145,13 @@ export default class FilmsMaterialTable extends React.Component {
         const formData = new FormData();
         formData.append("file", this.fileInput.current.files[0]);
         return axios
-            .post('http://localhost:3030/api/file', formData)
+            .post('http://localhost:3030/api/file', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
             .then(data => {
+                if (data.data && data.data.length)
+                    alert("Films added\nRefresh table by clicking a Reload button")
                 console.log(data);
-
             })
             .catch(err => alert(err.message));
 
@@ -164,12 +179,14 @@ export default class FilmsMaterialTable extends React.Component {
                 </Select>
                 <form onSubmit={this.fileInputHandleSubmit}>
                     <Input type="file" inputProps={{ accept: ".txt" }} inputRef={this.fileInput} />
-                    <button type="submit">Submit</button>
+                    <Button type="submit" color="primary" className={this.classes.button}>Submit</Button>
                 </form>
 
                 <MaterialTable
-                    
+
                     title="Films list"
+                    tableRef={this.tableRef}
+
                     columns={this.columns}
                     data={this.fetchPage}
                     icons={this.tableIcons}
@@ -179,6 +196,14 @@ export default class FilmsMaterialTable extends React.Component {
                         debounceInterval: 500,
                         sorting: false
                     }}
+                    actions={[
+                        {
+                            icon: 'refresh',
+                            tooltip: 'Refresh Data',
+                            isFreeAction: true,
+                            onClick: () => this.tableRef.current && this.tableRef.current.onQueryChange(),
+                        }
+                    ]}
                 />
             </>
         );

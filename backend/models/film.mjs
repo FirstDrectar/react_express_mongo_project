@@ -34,7 +34,6 @@ const Statics = {
     }
     ,
     async getPart(page, limit, searchstr, search, sort) {
-        console.log(searchstr);
         if (searchstr) {
             if (search === "name") {
                 if (sort === "asc") {
