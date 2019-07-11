@@ -1,10 +1,11 @@
 
+
 import chai from "chai";
 import chaiHttp from "chai-http";
 import app from '../index';
 import { Film } from "../models/film.mjs"
 import HttpStatus from 'http-status-codes';
-
+import fs from "fs";
 let should = chaiHttp.should;
 let assert = chai.assert;
 const expect = chai.expect;
@@ -41,7 +42,6 @@ describe("TEST API", () => {
         }
       })
       .then(res => {
-        console.log(res.body);
         expect(res).have.status(HttpStatus.OK);
         expect(res).have.property('body');
         expect(res).have.nested.property('body.data');
@@ -70,15 +70,13 @@ describe("TEST API", () => {
     }
     return Film.addNewFilm(film)
       .then(f => {
-        // console.log(f);
         return myRequest.delete('/api')
           .send({
-            
-              _id: f._id
-            
+
+            _id: f._id
+
           })
           .then(res => {
-            // console.log(res.body);
             expect(res).have.status(HttpStatus.OK);
             expect(res).have.property('body');
             expect(res.body).have.property('data');
@@ -86,22 +84,29 @@ describe("TEST API", () => {
             expect(res.body.data).have.property('name', 'name');
             expect(res.body.data).have.property('actorList');
             expect(res.body.data.actorList).to.be.a('array');
-      
+
           });
       })
 
 
   });
-  // it('upload file', () => {
-  //   const formdata = new FormData();
-  //   formdata.append("file", fs.readFileSync('./tests/test_movies.txt'));
-  //   // console.log(formdata)
-  //   return myRequest.post("/api/file")
-  //     .set('content-type', 'multipart/form-data')
-  //     .send({ file: formdata })
-  //     .then(res => {
-  //       // expect(res).have.status(200);
-  //       console.log(res);
-  //     });
-  // })
+  it('upload file', () => {
+    const file = fs.readFileSync('./tests/test_movies.txt');
+    return myRequest.post("/api/file")
+      .attach('file', file, { filename: "test_movies.txt" })
+      .then(res => {
+        expect(res).have.status(HttpStatus.OK);
+        expect(res).have.property('body');
+        expect(res.body).to.be.an('array');
+        expect(res).have.nested.property("body.[24]");
+        expect(res.body[4]).have.property("name","Butch Cassidy and the Sundance Kid");
+        expect(res.body[4]).have.property("actorList");
+        expect(res.body[4].actorList).to.be.a("array");
+
+        
+        myRequest.close();
+      }, err => {
+        console.log(err);
+      });
+  })
 });

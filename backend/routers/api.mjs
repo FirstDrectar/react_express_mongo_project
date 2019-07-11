@@ -10,7 +10,6 @@ router.route("/")
   .get(async (req, res) => {
     try {
       const data = await Film.getAll();
-      // console.log(data);
       return res.json({
         data
       });
@@ -24,7 +23,6 @@ router.route("/")
   })
   .post(async (req, res) => {
     try {
-      // console.log(req.body);
       const date = parseInt(req.body.data.releaseDate);
 
       if (isNaN(date) || date > 2020 || date < 1000) {
@@ -52,9 +50,7 @@ router.route("/")
       if (req.body._id) {
         const id = req.body._id;
         const data = await Film.deleteById(id);
-        console.log(">>>>>>>>>>>>");
 
-        // console.log(data);
 
         return res.json({
           data
@@ -73,12 +69,11 @@ router.route("/")
 
 router.post("/file", upload.single("file"), async (req, res) => {
   try {
-    console.log(req);
     if (!req.file) {
       return res.sendStatus(HttpStatus.BAD_REQUEST);
     }
     const data = req.file.buffer.toString();
-    const dataArr = data.split("\n").filter(word => word);
+    const dataArr = data.split("\n").filter(word => !/^\s*$/.test(word));
     let parsedData = [];
     for (let x = 0; x < dataArr.length; x++) {
       const newFilm = {

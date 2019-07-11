@@ -17,6 +17,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import Refresh from "@material-ui/icons/Refresh"
 import axios from 'axios';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -48,7 +49,7 @@ export default class FilmsMaterialTable extends React.Component {
             Search: Search,
             SortArrow: ArrowUpward,
             ThirdStateCheck: Remove,
-            ViewColumn: ViewColumn
+            ViewColumn: ViewColumn,
         }
         this.columns = [
             { title: 'Name', field: 'name' },
@@ -145,13 +146,10 @@ export default class FilmsMaterialTable extends React.Component {
         const formData = new FormData();
         formData.append("file", this.fileInput.current.files[0]);
         return axios
-            .post('http://localhost:3030/api/file', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
+            .post('http://localhost:3030/api/file', formData)
             .then(data => {
                 if (data.data && data.data.length)
-                    alert("Films added\nRefresh table by clicking a Reload button")
-                console.log(data);
+                    alert("Films added\nRefresh table by clicking a refresh table button")
             })
             .catch(err => alert(err.message));
 
@@ -198,10 +196,10 @@ export default class FilmsMaterialTable extends React.Component {
                     }}
                     actions={[
                         {
-                            icon: 'refresh',
+                            icon: Refresh,
                             tooltip: 'Refresh Data',
                             isFreeAction: true,
-                            onClick: () => this.tableRef.current && this.tableRef.current.onQueryChange(),
+                            onClick: () => this.tableRef.current && this.tableRef.current.onQueryChange()
                         }
                     ]}
                 />
